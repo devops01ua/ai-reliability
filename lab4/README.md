@@ -98,8 +98,7 @@ curl -s http://localhost:8080/v0/agents   | python3 -m json.tool
 ```
 
 Discovered inventory: **8 agents, 1 MCP server, 3 models** (see UI screenshot).
-
-![Inventory discovery map](screenshots/02-inventory/ai-inventory-discovery-map.png)
+![ai-inventory-discovery-map.png](screenshots%2F02-inventory%2Fai-inventory-discovery-map.png)
 
 The custom `rightsizer-agent` shows as **Running / Deployed** in the agents view:
 
