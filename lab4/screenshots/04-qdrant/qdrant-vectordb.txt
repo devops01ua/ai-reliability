@@ -1,0 +1,36 @@
+# Task 5 — Qdrant vector database
+
+## Helm release
+NAME  	NAMESPACE	REVISION	UPDATED                              	STATUS  	CHART        	APP VERSION
+qdrant	qdrant   	1       	2026-05-31 23:10:32.444487 +0300 EEST	deployed	qdrant-1.18.0	v1.18.0    
+
+## Workloads
+NAME                      READY   AGE
+statefulset.apps/qdrant   1/1     62m
+
+NAME           READY   STATUS    RESTARTS      AGE
+pod/qdrant-0   1/1     Running   1 (24m ago)   62m
+
+NAME                      TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)                      AGE
+service/qdrant            ClusterIP   10.96.173.61   <none>        6333/TCP,6334/TCP,6335/TCP   62m
+service/qdrant-headless   ClusterIP   None           <none>        6333/TCP,6334/TCP,6335/TCP   62m
+
+## Engine info (GET /)
+{"title":"qdrant - vector search engine","version":"1.18.0","commit":"db3fca327851e360c521065649e0f65a57fe7d3c"}
+
+
+## Readiness (GET /readyz)
+all shards are ready
+
+
+## Collections (GET /collections)
+{"result":{"collections":[{"name":"lab4-demo"}]},"status":"ok","time":0.000369167}
+
+
+## Demo collection detail
+{"result":{"status":"green","optimizer_status":"ok","indexed_vectors_count":0,"points_count":3,"segments_count":2,"config":{"params":{"vectors":{"size":4,"distance":"Cosine"},"shard_number":1,"replication_factor":1,"write_consistency_factor":1,"on_disk_payload":true},"hnsw_config":{"m":16,"ef_construct":100,"full_scan_threshold":10000,"max_indexing_threads":0,"on_disk":false},"optimizer_config":{"deleted_threshold":0.2,"vacuum_min_vector_number":1000,"default_segment_number":0,"max_segment_size"... (831 bytes total)
+[full output: ~/Library/Application Support/rtk/tee/1780261964_curl.log]
+
+
+## Vector search (cosine top-2)
+{"result":[{"id":1,"version":1,"score":1.0,"payload":{"text":"underutilized node"}},{"id":3,"version":1,"score":0.99399906,"payload":{"text":"right-sizing recommendation"}}],"status":"ok","time":0.009442917}

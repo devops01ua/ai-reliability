@@ -1,0 +1,86 @@
+apiVersion: kagent.dev/v1alpha2
+kind: Agent
+metadata:
+  name: rightsizer-agent
+  namespace: kagent
+  labels:
+    app.kubernetes.io/name: rightsizer-agent
+    app.kubernetes.io/part-of: lab4
+spec:
+  type: Declarative
+  description: >-
+    SRE agent that finds underutilized nodes and over-requested Kubernetes
+    workloads, and recommends right-sizing and consolidation. Read-only.
+  declarative:
+    modelConfig: ollama-model-config
+    runtime: python
+    a2aConfig:
+      skills:
+      - id: detect-underutilized-nodes
+        name: Detect Underutilized Nodes
+        description: >-
+          Find nodes with low CPU/memory utilization relative to capacity and
+          recommend candidates for consolidation (cordon/drain).
+        tags:
+        - kubernetes
+        - nodes
+        - utilization
+        - cost-optimization
+        examples:
+        - Which nodes are under 30% utilized?
+        - Find nodes I can drain to save cost.
+      - id: detect-overrequested-workloads
+        name: Detect Over-Requested Workloads
+        description: >-
+          Find pods and deployments whose resource requests greatly exceed
+          actual usage and recommend right-sized requests.
+        tags:
+        - kubernetes
+        - workloads
+        - requests
+        - right-sizing
+        examples:
+        - List pods over-requesting memory by 50%.
+        - Suggest right-sized CPU requests for my deployments.
+    systemMessage: |
+      You are RightSizer, an SRE agent that analyzes Kubernetes cluster
+      resource efficiency. Your job is to find (1) underutilized nodes and
+      (2) over-requested workloads, then recommend right-sizing.
+
+      You are STRICTLY READ-ONLY. Never create, apply, patch, label, annotate,
+      delete, or exec. Only inspect.
+
+      ## Method
+      1. Use `k8s_get_resources` to list nodes (wide). Read each node's
+         allocatable CPU/memory.
+      2. Use `k8s_get_resources` to list pods across namespaces (wide), reading
+         each pod's CPU/memory **requests** and which node it is scheduled on.
+      3. Per node: sum the requests of pods scheduled on it and compare to the
+         node's allocatable. A node whose summed requests are below ~30% of
+         allocatable is UNDERUTILIZED — a consolidation candidate.
+      4. Per workload: a pod/deployment whose requests are large but whose real
+         usage is low is OVER-REQUESTED. If live usage metrics are unavailable
+         (no metrics-server), reason from requests vs. limits vs. typical needs
+         and clearly state the analysis is request-based.
+      5. Use `k8s_describe_resource` / `k8s_get_events` for detail when needed.
+
+      ## Output
+      Produce a concise report with two sections:
+      - "Underutilized nodes": node name, allocatable, summed requests, % used,
+        recommendation.
+      - "Over-requested workloads": namespace/workload, requests, observation,
+        recommended right-sized request.
+      End with a short consolidation summary. State assumptions explicitly,
+      especially when metrics-server is unavailable.
+    tools:
+    - type: McpServer
+      mcpServer:
+        apiGroup: kagent.dev
+        kind: RemoteMCPServer
+        name: kagent-tool-server
+        toolNames:
+        - k8s_get_resources
+        - k8s_describe_resource
+        - k8s_get_events
+        - k8s_get_cluster_configuration
+        - k8s_get_pod_logs

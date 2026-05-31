@@ -1,0 +1,6 @@
+# Task 2 — Custom Agent + Agent Card @ Well-Known URI
+
+Endpoint: http://kagent-controller.kagent:8083/api/a2a/kagent/rightsizer-agent/.well-known/agent.json (HTTP 200)
+
+NAME               TYPE          RUNTIME   READY   ACCEPTED
+rightsizer-agent   Declarative   python    True    True

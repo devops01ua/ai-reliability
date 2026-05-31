@@ -1,0 +1,35 @@
+# Task 3 — Inventory: AI resources auto-discovered in kind-abox
+
+Registration model: the agentregistry controller attaches live deployment
+status only to DISCOVERED entries (resource-source=discovery). The rightsizer
+agent therefore appears as the discovered entry 'kagent-rightsizer-agent',
+which shows PUBLISHED=true, deployment ready=true (Running/Deployed).
+
+## DiscoveryConfig
+NAME         ENVIRONMENTS   CONNECTED   AGE
+local-abox                              20m
+
+## AgentCatalogs (all auto-discovered)
+NAME                                    NAME                                    VERSION   IMAGE   PUBLISHED   LATEST   AGE
+kagent-argo-rollouts-conversion-agent   kagent/argo-rollouts-conversion-agent   0.7.23            true        true     20m
+kagent-helm-agent                       kagent/helm-agent                       0.7.23            true        true     20m
+kagent-k8s-agent                        kagent/k8s-agent                        0.7.23            true        true     20m
+kagent-kgateway-agent                   kagent/kgateway-agent                   0.7.23            true        true     20m
+kagent-observability-agent              kagent/observability-agent              0.7.23            true        true     20m
+kagent-promql-agent                     kagent/promql-agent                     0.7.23            true        true     20m
+kagent-rightsizer-agent                 kagent/rightsizer-agent                 latest            true        true     20m
+lab2-ollama-agent                       lab2/ollama-agent                       latest            true        true     20m
+
+## rightsizer deployment status
+NAME                      PUBLISHED   READY   STATUS   NS
+kagent-rightsizer-agent   true        true    active   kagent
+
+## MCPServerCatalogs
+NAME                  NAME                  VERSION   PUBLISHED   LATEST   AGE
+lab2-everything-mcp   lab2/everything-mcp   latest    true        true     20m
+
+## ModelCatalogs
+NAME                          NAME                          PROVIDER   MODEL                    PUBLISHED   READY   AGE
+kagent-default-model-config   kagent/default-model-config   OpenAI     gpt-4.1-mini             true        true    20m
+kagent-ollama-model-config    kagent/ollama-model-config    OpenAI     qwen3.6:35b-a3b-q4_K_M   true        true    20m
+lab2-ollama-model-config      lab2/ollama-model-config      OpenAI     qwen3.6:35b-a3b-q4_K_M   true        true    20m
