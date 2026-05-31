@@ -1,14 +1,8 @@
 # Lab 4 — RightSizer SRE Agent
 
-Custom declarative **kagent Agent** that finds **underutilized nodes** and
-**over-requested workloads**, serves an **Agent Card** at the A2A Well-Known URI,
-and is registered in the **agentregistry** Inventory via the `DiscoveryConfig` CRD
-(the controller auto-creates the linked `AgentCatalog` entry that shows the agent as
-Running/Deployed).
+Custom declarative **kagent Agent** that finds **underutilized nodes** and **over-requested workloads**, serves an **Agent Card** at the A2A Well-Known URI, and is registered in the **agentregistry** Inventory via the `DiscoveryConfig` CRD (the controller auto-creates the linked `AgentCatalog` entry that shows the agent as Running/Deployed).
 
-> Runs in namespace **`kagent`** (the agent references the `kagent-tool-server`
-> RemoteMCPServer, whose tool refs are namespace-local — so the agent and a copy of
-> the Ollama `ModelConfig` live alongside it in `kagent`).
+> Runs in namespace **`kagent`** (the agent references the `kagent-tool-server` RemoteMCPServer, whose tool refs are namespace-local — so the agent and a copy of the Ollama `ModelConfig` live alongside it in `kagent`).
 
 ## Components
 
@@ -37,8 +31,7 @@ kubectl --context kind-abox port-forward -n kagent svc/kagent-controller 8083:80
 curl -s http://localhost:8083/api/a2a/kagent/rightsizer-agent/.well-known/agent.json | python3 -m json.tool
 ```
 
-Both `/.well-known/agent.json` and `/.well-known/agent-card.json` return the card
-(name, description, url, capabilities, and the two skills).
+Both `/.well-known/agent.json` and `/.well-known/agent-card.json` return the card (name, description, url, capabilities, and the two skills).
 
 ## Run it (A2A message/send)
 
@@ -52,11 +45,8 @@ curl -s -X POST http://localhost:8083/api/a2a/kagent/rightsizer-agent/ \
 
 ## Model & tools
 
-- Model: `ollama-model-config` (qwen3.6, local Ollama) — reused from Lab 2,
-  copied into ns `kagent`.
-- Tools: `kagent-tool-server` RemoteMCPServer, read-only subset
-  (`k8s_get_resources`, `k8s_describe_resource`, `k8s_get_events`,
-  `k8s_get_cluster_configuration`, `k8s_get_pod_logs`).
+- Model: `ollama-model-config` (qwen3.6, local Ollama) — reused from Lab 2, copied into ns `kagent`.
+- Tools: `kagent-tool-server` RemoteMCPServer, read-only subset (`k8s_get_resources`, `k8s_describe_resource`, `k8s_get_events`, `k8s_get_cluster_configuration`, `k8s_get_pod_logs`).
 - No metrics-server on kind-abox → analysis is **requests-vs-allocatable**.
 
 ## Skills (Agent Card)
