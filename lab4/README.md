@@ -98,7 +98,7 @@ curl -s http://localhost:8080/v0/agents   | python3 -m json.tool
 ```
 
 Discovered inventory: **8 agents, 1 MCP server, 3 models** (see UI screenshot).
-![ai-inventory-discovery-map.png](screenshots%2F02-inventory%2Fai-inventory-discovery-map.png)
+![ai-inventory-discovery-map.png](screenshots%2F02-inventory%2Fai-inventory-discovery-map-v2.png)
 
 The custom `rightsizer-agent` shows as **Running / Deployed** in the agents view:
 
@@ -165,7 +165,7 @@ screenshots/
 ├── 02-inventory/
 │   ├── inventory-catalog.txt        # discovered AgentCatalog/MCPServerCatalog/ModelCatalog
 │   ├── cluster-ai-resources.txt     # ground-truth kubectl listing
-│   ├── ai-inventory-discovery-map.png  # discovery map (8 agents / 1 server / 3 models)
+│   ├── ai-inventory-discovery-map-v2.png  # discovery map (8 agents / 1 server / 3 models)
 │   ├── inventory-agents-tab.png     # agents grid
 │   └── custom-agent-deployed.png    # rightsizer-agent Running/Deployed
 ├── 03-mcpg/
