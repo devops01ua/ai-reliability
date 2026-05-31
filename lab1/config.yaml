@@ -1,0 +1,31 @@
+# yaml-language-server: $schema=https://agentgateway.dev/schema/config
+
+# LLM proxy: OpenAI-compatible endpoint on :3000 forwarding to local Ollama.
+binds:
+- port: 3000
+  listeners:
+  - routes:
+    - policies:
+        cors:
+          allowOrigins:
+          - "*"
+          allowHeaders:
+          - mcp-protocol-version
+          - content-type
+          - cache-control
+          exposeHeaders:
+          - "Mcp-Session-Id"
+      backends:
+      - mcp:
+          targets:
+          - name: everything
+            stdio:
+              cmd: npx
+              args: ["@modelcontextprotocol/server-everything"]
+llm:
+  port: 3000
+  models:
+  - name: "*"
+    provider: openAI
+    params:
+      hostOverride: "localhost:11434"
