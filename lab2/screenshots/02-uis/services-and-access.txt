@@ -1,0 +1,41 @@
+# Step 2 — Доступи до UI (Flux, Kagent, AgentGateway): service snapshot
+# captured 2026-05-31T19:00:53Z
+
+## Flux (Flux Operator GitOps + UI)
+### kubectl get helmreleases,kustomizations,gitrepositories -A
+NAMESPACE             NAME                                                   AGE   READY   STATUS
+agentgateway-system   helmrelease.helm.toolkit.fluxcd.io/agentgateway        65m   True    Helm install succeeded for release agentgateway-system/agentgateway.v1 with chart agentgateway@2.2.1+f7497fcb08f7
+agentgateway-system   helmrelease.helm.toolkit.fluxcd.io/agentgateway-crds   66m   True    Helm install succeeded for release agentgateway-system/agentgateway-crds.v1 with chart agentgateway-crds@2.2.1+a82eae1e4346
+flux-system           helmrelease.helm.toolkit.fluxcd.io/gateway-api-crds    66m   True    Helm install succeeded for release flux-system/gateway-api-crds.v1 with chart gateway-api-crds@1.4.0+5b9a7aba8268
+kagent                helmrelease.helm.toolkit.fluxcd.io/kagent              65m   True    Helm upgrade succeeded for release kagent/kagent.v2 with chart kagent@0.7.23+c428da65781e
+kagent                helmrelease.helm.toolkit.fluxcd.io/kagent-crds         66m   True    Helm install succeeded for release kagent/kagent-crds.v1 with chart kagent-crds@0.9.4+eb448c6275e1
+
+NAMESPACE     NAME                                                         AGE   READY   STATUS
+flux-system   kustomization.kustomize.toolkit.fluxcd.io/gateway-api-crds   66m   True    Applied revision: v1.4.0@sha1:5e5891a5adad272363de782eb02a042166f1913c
+flux-system   kustomization.kustomize.toolkit.fluxcd.io/releases           67m   True    Applied revision: 0.5.7@sha256:6c8949dbe574af10039c9e5cdcdd1bfba360f035609ff2c3f48e05d533b890da
+flux-system   kustomization.kustomize.toolkit.fluxcd.io/releases-crds      67m   True    Applied revision: 0.5.7@sha256:6c8949dbe574af10039c9e5cdcdd1bfba360f035609ff2c3f48e05d533b890da
+
+NAMESPACE     NAME                                                 URL                                              AGE   READY   STATUS
+flux-system   gitrepository.source.toolkit.fluxcd.io/gateway-api   https://github.com/kubernetes-sigs/gateway-api   66m   True    stored artifact for revision 'v1.4.0@sha1:5e5891a5adad272363de782eb02a042166f1913c'
+### flux-operator service (UI on http-web :9080)
+NAME            TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)             AGE
+flux-operator   ClusterIP   10.96.178.214   <none>        8080/TCP,9080/TCP   68m
+# Access: kubectl port-forward -n flux-system svc/flux-operator 9080:9080  -> http://localhost:9080
+
+## Kagent UI
+### kubectl get svc -n kagent (kagent-ui, kagent-controller)
+NAME                                             TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
+kagent-controller                                ClusterIP   10.96.230.189   <none>        8083/TCP   65m
+kagent-ui                                        ClusterIP   10.96.75.209    <none>        8080/TCP   65m
+# Access: kubectl port-forward -n kagent svc/kagent-ui 8080:8080  -> http://localhost:8080
+
+## AgentGateway
+### kubectl get gateways -A
+NAMESPACE             NAME                    CLASS          ADDRESS   PROGRAMMED   AGE
+agentgateway-system   agentgateway-external   agentgateway             True         65m
+lab2                  ollama-llm              agentgateway             True         39m
+### kubectl get svc -n agentgateway-system
+NAME                    TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)             AGE
+agentgateway            ClusterIP      10.96.13.125    <none>        9978/TCP,9093/TCP   65m
+agentgateway-external   LoadBalancer   10.96.239.149   <pending>     80:30080/TCP        65m
+# Access: kubectl port-forward -n agentgateway-system svc/agentgateway-external 8081:80  -> http://localhost:8081

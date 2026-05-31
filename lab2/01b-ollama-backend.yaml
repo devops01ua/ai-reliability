@@ -1,0 +1,17 @@
+# AI backend: forwards OpenAI-compatible chat requests to the host's Ollama.
+# Referenced by the ollama-route HTTPRoute (see 01-ollama-gateway.yaml).
+apiVersion: agentgateway.dev/v1alpha1
+kind: AgentgatewayBackend
+metadata:
+  name: ollama-backend
+  namespace: lab2
+spec:
+  ai:
+    groups:
+    - providers:
+      - name: ollama
+        openai: {}              # model name passed through from the request
+        host: host.docker.internal
+        port: 11434             # host and port must be set together
+        # No `path:` override — the OpenAI provider default already targets
+        # /v1/chat/completions (Ollama's route). Setting path: /v1 caused a 404.
