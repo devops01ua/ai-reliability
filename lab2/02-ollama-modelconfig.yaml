@@ -1,0 +1,24 @@
+# Throwaway API key — Ollama ignores auth, but Kagent's ModelConfig requires it.
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ollama-dummy-key
+  namespace: lab2
+type: Opaque
+stringData:
+  OPENAI_API_KEY: "ollama-no-auth-required"
+---
+apiVersion: kagent.dev/v1alpha2
+kind: ModelConfig
+metadata:
+  name: ollama-model-config
+  namespace: lab2
+spec:
+  provider: OpenAI
+  # qwen3.6 reliably emits OpenAI-style structured tool_calls (verified through the
+  # gateway). llama3.2 only printed the call as plain text, so tools never executed.
+  model: qwen3.6:35b-a3b-q4_K_M
+  apiKeySecret: ollama-dummy-key
+  apiKeySecretKey: OPENAI_API_KEY
+  openAI:
+    baseUrl: http://ollama-llm.lab2.svc.cluster.local/v1

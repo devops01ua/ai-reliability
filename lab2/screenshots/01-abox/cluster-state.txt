@@ -1,0 +1,48 @@
+# Step 1 — Розгорнути abox: cluster state snapshot
+# captured 2026-05-31T19:00:39Z
+
+## kubectl config current-context
+kind-abox
+
+## kubectl get nodes -o wide
+NAME                 STATUS   ROLES           AGE   VERSION   INTERNAL-IP   EXTERNAL-IP   OS-IMAGE                         KERNEL-VERSION        CONTAINER-RUNTIME
+abox-control-plane   Ready    control-plane   68m   v1.35.0   172.19.0.6    <none>        Debian GNU/Linux 12 (bookworm)   5.15.49-linuxkit-pr   containerd://2.2.0
+abox-worker          Ready    <none>          68m   v1.35.0   172.19.0.5    <none>        Debian GNU/Linux 12 (bookworm)   5.15.49-linuxkit-pr   containerd://2.2.0
+abox-worker2         Ready    <none>          68m   v1.35.0   172.19.0.7    <none>        Debian GNU/Linux 12 (bookworm)   5.15.49-linuxkit-pr   containerd://2.2.0
+
+## kubectl get pods -A
+NAMESPACE             NAME                                              READY   STATUS    RESTARTS        AGE
+agentgateway-system   agentgateway-6bff96457-2hm6s                      1/1     Running   6 (11m ago)     65m
+agentgateway-system   agentgateway-external-d9d79996d-nxjkn             1/1     Running   0               65m
+flux-system           flux-operator-6b54f6bc76-9spkz                    1/1     Running   3 (30m ago)     68m
+flux-system           helm-controller-59bb8d7859-z8c5f                  1/1     Running   3 (30m ago)     67m
+flux-system           kustomize-controller-5c7db8f66-mgpbr              1/1     Running   3 (30m ago)     67m
+flux-system           notification-controller-5f9b8844d6-jlwk2          1/1     Running   3 (30m ago)     67m
+flux-system           source-controller-5d6dc84cd5-lxvgv                1/1     Running   2 (59m ago)     67m
+kagent                argo-rollouts-conversion-agent-67d8668bd7-bsxtp   1/1     Running   0               65m
+kagent                helm-agent-8586d5b596-8vh5t                       1/1     Running   0               65m
+kagent                k8s-agent-67747c65ff-cmhvb                        1/1     Running   0               65m
+kagent                kagent-controller-dc97b84cc-58dpd                 1/1     Running   0               65m
+kagent                kagent-grafana-mcp-8489bdbd8-s8zcs                1/1     Running   0               65m
+kagent                kagent-kmcp-controller-manager-554bc79b79-x7zgn   1/1     Running   6 (11m ago)     65m
+kagent                kagent-tools-5b9c4ddbc7-wbx8c                     1/1     Running   0               65m
+kagent                kagent-ui-84d57799f-wbxv2                         1/1     Running   0               65m
+kagent                kgateway-agent-f97c5549b-vffcz                    1/1     Running   0               65m
+kagent                observability-agent-6d7cdc4f9b-gwz2v              1/1     Running   0               65m
+kagent                promql-agent-86bcd4c684-zlkhl                     1/1     Running   0               65m
+kube-system           coredns-7d764666f9-77k9f                          1/1     Running   0               68m
+kube-system           coredns-7d764666f9-pqjvx                          1/1     Running   0               68m
+kube-system           etcd-abox-control-plane                           1/1     Running   0               68m
+kube-system           kindnet-sj2zp                                     1/1     Running   0               68m
+kube-system           kindnet-x2lkk                                     1/1     Running   0               68m
+kube-system           kindnet-zpxpc                                     1/1     Running   0               68m
+kube-system           kube-apiserver-abox-control-plane                 1/1     Running   0               68m
+kube-system           kube-controller-manager-abox-control-plane        1/1     Running   6 (10m ago)     68m
+kube-system           kube-proxy-8bl4t                                  1/1     Running   0               68m
+kube-system           kube-proxy-pjs46                                  1/1     Running   0               68m
+kube-system           kube-proxy-pkz76                                  1/1     Running   0               68m
+kube-system           kube-scheduler-abox-control-plane                 1/1     Running   7 (9m56s ago)   68m
+lab2                  everything-mcp-5ddc6bcc8-mxsx9                    1/1     Running   0               37m
+lab2                  ollama-agent-cb4bb4bc4-fxsls                      1/1     Running   0               12m
+lab2                  ollama-llm-648b6fb8b8-5nb5b                       1/1     Running   0               39m
+local-path-storage    local-path-provisioner-67b8995b4b-24qpz           1/1     Running   0               68m

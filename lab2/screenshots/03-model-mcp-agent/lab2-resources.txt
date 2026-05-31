@@ -1,0 +1,37 @@
+# Step 3 — Модель + declarative MCP tool server + агент (namespace lab2)
+# captured 2026-05-31T19:01:07Z
+
+## All lab2 resources
+### kubectl get gateway,httproute,agentgatewaybackend,modelconfig,mcpserver,agent -n lab2
+NAME                                           CLASS          ADDRESS   PROGRAMMED   AGE
+gateway.gateway.networking.k8s.io/ollama-llm   agentgateway             True         40m
+
+NAME                                               HOSTNAMES   AGE
+httproute.gateway.networking.k8s.io/ollama-route               40m
+
+NAME                                                  ACCEPTED   AGE
+agentgatewaybackend.agentgateway.dev/ollama-backend   True       39m
+
+NAME                                         PROVIDER   MODEL
+modelconfig.kagent.dev/ollama-model-config   OpenAI     qwen3.6:35b-a3b-q4_K_M
+
+NAME                                  READY   AGE
+mcpserver.kagent.dev/everything-mcp   True    37m
+
+NAME                            TYPE          RUNTIME   READY   ACCEPTED
+agent.kagent.dev/ollama-agent   Declarative   python    True    True
+
+## ModelConfig (the connected model)
+model=qwen3.6:35b-a3b-q4_K_M provider=OpenAI baseUrl=http://ollama-llm.lab2.svc.cluster.local/v1 accepted=True
+
+## MCPServer (declarative tool server)
+transport=stdio cmd=npx args=["-y","@modelcontextprotocol/server-everything"] ready=True
+
+## Agent
+ready=True accepted=True
+
+## lab2 pods
+NAME                             READY   STATUS    RESTARTS   AGE
+everything-mcp-5ddc6bcc8-mxsx9   1/1     Running   0          37m
+ollama-agent-cb4bb4bc4-fxsls     1/1     Running   0          13m
+ollama-llm-648b6fb8b8-5nb5b      1/1     Running   0          40m
