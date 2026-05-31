@@ -182,7 +182,7 @@ curl -s http://localhost:6333/collections     # lab4-demo
 A demo collection `lab4-demo` (4-dim, Cosine) with 3 vectors proves storage + search:
 a cosine query returns the nearest vectors with scores 1.0 / 0.994. Full I/O in
 `screenshots/04-qdrant/qdrant-vectordb.txt`.
-
+![qdrant-dashboard.png](screenshots%2F04-qdrant%2Fqdrant-dashboard.png)
 ---
 
 ## Evidence (`screenshots/`)
@@ -205,6 +205,8 @@ screenshots/
 │   ├── evaluation-detail.yaml       # full GovernanceEvaluation CR
 │   ├── mcpg-dashboard.png           # MCPG dashboard (Grade A, score 100)
 │   └── custom-agent-mcpg-score.png  # rightsizer-agent governed (100, COMPLIANT)
-└── 04-qdrant/
-    └──  qdrant-vectordb.txt          # engine info, collections, vector search
+└── 04-qdrant/ 
+    ├──  qdrant-vectordb.txt          # engine info, collections, vector search
+    ├──  qdrant-collection.png        # lab4-demo collection view
+    └──  qdrant-dashboard.png         # Qdrant dashboard
 ```
