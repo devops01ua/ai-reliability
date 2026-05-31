@@ -1,0 +1,26 @@
+# Ground-truth runtime AI resources (kubectl)
+
+## kagent Agents
+NAMESPACE   NAME                             TYPE          RUNTIME   READY   ACCEPTED
+kagent      argo-rollouts-conversion-agent   Declarative   python    True    True
+kagent      helm-agent                       Declarative   python    True    True
+kagent      k8s-agent                        Declarative   python    True    True
+kagent      kgateway-agent                   Declarative   python    True    True
+kagent      observability-agent              Declarative   python    True    True
+kagent      promql-agent                     Declarative   python    True    True
+kagent      rightsizer-agent                 Declarative   python    True    True
+lab2        ollama-agent                     Declarative   python    True    True
+
+## MCP Servers
+NAMESPACE   NAME                                  READY   AGE
+lab2        mcpserver.kagent.dev/everything-mcp   True    168m
+
+NAMESPACE   NAME                                            PROTOCOL          URL                                         ACCEPTED
+kagent      remotemcpserver.kagent.dev/kagent-grafana-mcp   STREAMABLE_HTTP   http://kagent-grafana-mcp.kagent:8000/mcp   True
+kagent      remotemcpserver.kagent.dev/kagent-tool-server   STREAMABLE_HTTP   http://kagent-tools.kagent:8084/mcp         True
+
+## Model Configs
+NAMESPACE   NAME                   PROVIDER   MODEL
+kagent      default-model-config   OpenAI     gpt-4.1-mini
+kagent      ollama-model-config    OpenAI     qwen3.6:35b-a3b-q4_K_M
+lab2        ollama-model-config    OpenAI     qwen3.6:35b-a3b-q4_K_M

@@ -1,0 +1,212 @@
+apiVersion: v1
+items:
+- apiVersion: governance.mcp.io/v1alpha1
+  kind: GovernanceEvaluation
+  metadata:
+    annotations:
+      meta.helm.sh/release-name: mcp-governance
+      meta.helm.sh/release-namespace: mcp-governance
+    creationTimestamp: "2026-05-31T20:04:59Z"
+    generation: 1
+    labels:
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/name: mcp-governance
+      app.kubernetes.io/version: 1.0.0
+      helm.sh/chart: mcp-governance-0.1.0
+    name: enterprise-evaluation
+    resourceVersion: "40526"
+    uid: 992b867b-2f48-4866-a8c9-941bddba50c6
+  spec:
+    evaluationScope: cluster
+    policyRef: enterprise-mcp-policy
+  status:
+    findings:
+    - category: AgentGateway
+      description: MCP servers exist in the cluster but no AgentgatewayBackend of
+        type 'mcp' is configured to route their traffic.
+      id: AGW-004
+      impact: MCP servers are accessible directly without agentgateway governance.
+      namespace: ""
+      remediation: Create AgentgatewayBackend resources with spec.mcp.targets pointing
+        to your MCP server Services.
+      resourceRef: ""
+      severity: High
+      timestamp: "2026-05-31T21:09:49Z"
+      title: No MCP-type AgentgatewayBackend configured
+    findingsCount: 1
+    lastEvaluationTime: "2026-05-31T21:09:49Z"
+    mcpServerScores:
+    - criticalFindings: 0
+      effectiveToolCount: 0
+      lastEvaluated: "2026-05-31T21:09:49Z"
+      name: everything-mcp
+      namespace: lab2
+      relatedResources:
+        backends: 0
+        gateways: 0
+        policies: 0
+        routes: 0
+      score: 100
+      scoreBreakdown:
+        authentication: 100
+        authorization: 100
+        cors: 100
+        gatewayRouting: 100
+        promptGuard: 0
+        rateLimit: 0
+        tls: 100
+        toolScope: 100
+      source: KagentMCPServer
+      status: compliant
+      toolCount: 2
+    - criticalFindings: 0
+      effectiveToolCount: 56
+      lastEvaluated: "2026-05-31T21:09:49Z"
+      name: kagent-grafana-mcp
+      namespace: kagent
+      relatedResources:
+        backends: 0
+        gateways: 0
+        policies: 0
+        routes: 0
+      score: 100
+      scoreBreakdown:
+        authentication: 100
+        authorization: 100
+        cors: 100
+        gatewayRouting: 100
+        promptGuard: 0
+        rateLimit: 0
+        tls: 100
+        toolScope: 100
+      source: KagentRemoteMCPServer
+      status: compliant
+      toolCount: 56
+    - criticalFindings: 0
+      effectiveToolCount: 123
+      lastEvaluated: "2026-05-31T21:09:49Z"
+      name: kagent-tool-server
+      namespace: kagent
+      relatedResources:
+        backends: 0
+        gateways: 0
+        policies: 0
+        routes: 0
+      score: 100
+      scoreBreakdown:
+        authentication: 100
+        authorization: 100
+        cors: 100
+        gatewayRouting: 100
+        promptGuard: 0
+        rateLimit: 0
+        tls: 100
+        toolScope: 100
+      source: KagentRemoteMCPServer
+      status: compliant
+      toolCount: 123
+    namespaceScores:
+    - findings: 0
+      namespace: agentgateway-system
+      score: 100
+    - findings: 0
+      namespace: agentregistry
+      score: 100
+    - findings: 0
+      namespace: default
+      score: 100
+    - findings: 0
+      namespace: flux-system
+      score: 100
+    - findings: 0
+      namespace: kagent
+      score: 100
+    - findings: 0
+      namespace: lab2
+      score: 100
+    - findings: 0
+      namespace: mcp-governance
+      score: 100
+    - findings: 0
+      namespace: ollama
+      score: 100
+    - findings: 0
+      namespace: qdrant
+      score: 100
+    phase: Compliant
+    resourceSummary:
+      agentgatewayBackends: 1
+      agentgatewayPolicies: 0
+      compliantResources: 11
+      exposedMCPEndpoints: 0
+      gatewaysFound: 2
+      httpRoutes: 2
+      kagentAgents: 8
+      kagentMCPServers: 1
+      kagentRemoteMCPServers: 2
+      nonCompliantResources: 1
+      totalMCPEndpoints: 3
+    score: 100
+    scoreBreakdown:
+      agentGatewayScore: 100
+      authenticationScore: 100
+      authorizationScore: 100
+      corsScore: 100
+      promptGuardScore: 0
+      rateLimitScore: 0
+      tlsScore: 100
+    skillCatalogScores: []
+    verifiedCatalogScores:
+    - catalogName: lab2/everything-mcp
+      checks:
+      - id: PUB-001
+        maxPoints: 10
+        name: Source Kind Tracked
+        points: 10
+      - id: PUB-002
+        maxPoints: 10
+        name: Environment Labelled
+        points: 10
+      - id: PUB-003
+        maxPoints: 10
+        name: Management Type Set
+        points: 10
+      - id: SEC-001
+        maxPoints: 15
+        name: Transport Type
+        points: 10
+      - id: SEC-002
+        maxPoints: 10
+        name: Remote Endpoint TLS
+        points: 10
+      - id: DEP-001
+        maxPoints: 5
+        name: Published
+        points: 5
+      - id: DEP-002
+        maxPoints: 10
+        name: Deployment Ready
+        points: 10
+      - id: DEP-003
+        maxPoints: 5
+        name: Versioned
+        points: 0
+      - id: TOOL-001
+        maxPoints: 15
+        name: Tool Scope
+        points: 15
+      - id: USE-001
+        maxPoints: 10
+        name: Agent Usage
+        points: 10
+      complianceScore: 100
+      compositeScore: 90
+      lastScored: "2026-05-31T21:09:46Z"
+      namespace: agentregistry
+      resourceVersion: "40481"
+      securityScore: 77
+      status: Verified
+      trustScore: 100
+kind: List
+metadata:
+  resourceVersion: ""

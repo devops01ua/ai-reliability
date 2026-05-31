@@ -1,0 +1,24 @@
+# DiscoveryConfig — auto-discover AI resources in the local kind-abox cluster.
+# The agentregistry-inventory controller watches the listed namespaces and
+# auto-catalogs kagent Agents, MCPServers/RemoteMCPServers, and ModelConfigs.
+apiVersion: agentregistry.dev/v1alpha1
+kind: DiscoveryConfig
+metadata:
+  name: local-abox
+  namespace: agentregistry
+spec:
+  environments:
+    - name: local
+      cluster:
+        name: local
+      discoveryEnabled: true
+      namespaces:
+        - kagent
+        - lab2
+        - agentregistry
+      resourceTypes:
+        - Agent
+        - MCPServer
+        - ModelConfig
+      labels:
+        environment: local

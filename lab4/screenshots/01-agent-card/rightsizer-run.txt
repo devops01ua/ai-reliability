@@ -1,0 +1,82 @@
+# RightSizer Agent — Live A2A Run (kind-abox)
+
+Endpoint: http://kagent-controller.kagent:8083/api/a2a/kagent/rightsizer-agent/
+Method: message/send (JSON-RPC 2.0)  →  HTTP 200
+status.state: completed
+taskId: b9b458df-ac96-4601-b745-690e2b49d664
+
+## Prompt
+Analyze kind-abox: list underutilized nodes (summed pod requests under 30% of allocatable) and the most over-requested workloads. Give a short right-sizing report.
+Analyze kind-abox: list underutilized nodes (summed pod requests under 30% of allocatable) and the most over-requested workloads. Give a short right-sizing report.
+
+## Agent Report
+# Right-Sizing Analysis Report — kind-abox
+
+## Cluster Overview
+Kind cluster with 3 nodes, each **2 CPU / ~3.84 Gi RAM (4028 Mi)**.
+
+| Node | Role | CPU Used | Mem Used | Pods |
+|------|------|----------|----------|------|
+| abox-control-plane | control-plane | 950m (47%) | 290 Mi (7%) | 9 |
+| abox-worker | worker | 1010m (50%) | 1970 Mi (50%) | 16 |
+| abox-worker2 | worker | 960m (48%) | 1586 Mi (40%) | 14 |
+
+---
+
+## Underutilized Nodes
+
+### ⚠️ abox-control-plane — Memory severely underutilized
+- **Allocatable:** 2 CPU / 3933 Mi memory
+- **Pod requests:** 950m CPU (47%), 290 Mi memory (7%)
+- **Analysis:** Memory utilization is only **7%** of allocatable — far below the 30% threshold. CPU is moderate at 47%. This node hosts 9 system/control-plane pods (coredns, etcd, apiserver, etc.) whose combined memory footprint is minimal (~290 Mi).
+- **Recommendation:** 
+  - This node is **not** a consolidation target by itself (it runs control-plane components that should stay on the control plane).
+  - If you plan to reduce the cluster to 1 node (control-plane only), move all scheduling tolerations off the control-plane taint or consolidate workloads carefully, as the control plane's capacity (2 CPU / 3.8 Gi) is sufficient for the current ~20-pod total workload on both workers combined.
+
+**No worker nodes are underutilized by the 30% criterion.** Both abox-worker (50%/50%) and abox-worker2 (48%/40%) are reasonably loaded.
+
+---
+
+## Over-Requested Workloads
+
+Analysis is **request-based** (no metrics-server/live usage metrics available). Observations focus on pods with large request-to-limit gaps, zero requests on memory/CPU, or disproportionately large requests for their workload type.
+
+### 1. kagent namespace — 256 Mi requests with 1 Gi limits (4× gap)
+**Workloads:** `k8s-agent`, `kagent-ui`, `observability-agent`, `helm-agent`, `kgateway-agent`, `promql-agent` (+ 2 more)
+- **Request:** CPU 100m, Memory 256 Mi
+- **Limit:** CPU 500m–2, Memory **1 Gi**
+- **Observation:** The 4× request-to-limit gap on memory suggests these agent pods are allowed to use up to 1 Gi but only reserve 256 Mi. While this is technically "under-requesting" (not over-requesting), the **limits are overly generous** for agent-type containers, which typically consume 50–200 Mi steady-state. If these agents are memory-bound, the limit is fine; if not, reducing the limit to 256–512 Mi would contain runaway memory.
+- **Right-sizing:** Reduce memory **limit** to 512 Mi. Keep requests at 128–256 Mi.
+
+### 2. flux-system namespace — Controllers with 1 Gi memory limit
+**Workloads:** `flux-operator`, `notification-controller`, `helm-controller`, `kustomize-controller`, `source-controller`
+- **Request:** CPU 100m, Memory 64 Mi
+- **Limit:** Memory **1 Gi**
+- **Observation:** Flux controllers are lightweight operators; requesting only 64 Mi memory but allowing up to 1 Gi is an extreme ratio (15.6×). For operators, 128–256 Mi is typically sufficient.
+- **Right-sizing:** Memory **limit → 256 Mi**, request → 64–128 Mi.
+
+### 3. lab2 namespace — Zero requests on ollama pods
+**Workloads:** `ollama-llm-648b6fb8b8-5nb5b`, `ollama-agent-cb4bb4bc4-fxsls`
+- **Request:** CPU 0, Memory 0
+- **Observation:** Ollama (LLM runtime) pods have **no resource requests or limits**. Without requests, the scheduler treats them as unconstrained, which can lead to the node being drained before eviction occurs. Without limits, OOM-kill risk is high. This is a form of "over-requesting" in the implicit sense — unbounded resources.
+- **Right-sizing:** Add **requests:** CPU 500m, Memory 512 Mi; **limits:** CPU 2, Memory 2 Gi (adjust based on model size).
+
+### 4. mcp-governance namespace — Moderate request imbalance
+**Workloads:** `mcp-governance-dashboard-8b67c88dd-xkt9c`
+- **Request:** CPU 50m, Memory 64 Mi
+- **Limit:** CPU 200m, Memory 128 Mi
+- **Observation:** Requests are reasonable here (50%/50% of limits). No urgent action needed.
+
+---
+
+## Consolidation Summary
+
+| Finding | Severity | Action |
+|---------|----------|--------|
+| abox-control-plane memory at 7% | Low | Normal for control-plane; not a consolidation target |
+| Worker nodes at 40–50% CPU/mem | Informational | Both workers are adequately utilized; no consolidation needed |
+| kagent pods: 1 Gi limit, 256 Mi request | Medium | Reduce memory limit to 512 Mi |
+| flux-system controllers: 1 Gi limit, 64 Mi request | Medium | Reduce memory limit to 256 Mi |
+| lab2/ollama pods: zero requests & limits | High | Set explicit requests & limits |
+
+**Cluster-level recommendation:** This is a **Kind development cluster** (3 small nodes). No node consolidation is needed — workload is well-distributed across both workers. Focus right-sizing efforts on **reducing memory limits** on agent/operator pods (kagent, flux-system) and **setting explicit resource bounds** on the ollama pods, which are currently resource-unbounded.
